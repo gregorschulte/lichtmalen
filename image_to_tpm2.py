@@ -9,7 +9,7 @@ import os
 import argparse
 import binascii
 import numpy as np
-import Image as pil
+from PIL import Image as pil
 #import textwrap
 #import matplotlib.pyplot as plt
 
@@ -29,7 +29,7 @@ def tpm2(image, lastFrameBlack=False):
         output += '36' # end-of-frame
     if lastFrameBlack:
         output += frameheader + '0'*6*dim[1] + '36' # black frame
-        print 'Added black frame to EOF'
+        print ('Added black frame to EOF')
 
     return ''.join(output)
 
@@ -66,13 +66,13 @@ def main(imageFilename, tpm2Filename, *opts):
     # open image file
     try:
         image = pil.open(imageFilename)
-        print 'Image read from', imageFilename
+        print ('Image read from', imageFilename)
     except:
-        print 'ERROR: cannot read input image file!'
+        print ('ERROR: cannot read input image file!')
 
     # filter image
     if image.mode != 'RGB':
-        print 'Convert image to RGB'
+        print ('Convert image to RGB')
         image = image.convert('RGB')
     image = imageFilter(image)
     image = imageFit2LEDs(image)
@@ -89,7 +89,7 @@ def main(imageFilename, tpm2Filename, *opts):
 
     # convert image to tpm2
     tpm2string = tpm2(image, *opts)
-    print 'Image successfully converted'
+    print ('Image successfully converted')
 
     # show result to screen
     #print textwrap.fill('\n' + tpm2string + '\n')
@@ -98,7 +98,7 @@ def main(imageFilename, tpm2Filename, *opts):
     with open(tpm2Filename, 'wb') as binFile:
         tpm2binary = binascii.a2b_hex(tpm2string)
         binFile.write(tpm2binary)
-        print 'TPM2 file written to', tpm2Filename
+        print ('TPM2 file written to', tpm2Filename)
 
 if __name__ == "__main__":
     # if this module is being run directly use command line arguments
